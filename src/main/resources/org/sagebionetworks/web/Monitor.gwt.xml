@@ -12,11 +12,18 @@
 	<!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/> -->
 
 	<!-- Other module inherits -->
+	<inherits name="com.google.gwt.activity.Activity" />
+	<inherits name="com.google.gwt.place.Place" />
+	<inherits name="com.google.gwt.inject.Inject" />
 
 	<!-- Specify the app entry point class. -->
 	<entry-point class='org.sagebionetworks.web.client.Monitor' />
 
-	<inherits name="com.google.gwt.inject.Inject" />
+	<inherits name="com.gwtplatform.mvp.Mvp"/>
+	<inherits name="com.extjs.gxt.ui.GXT" />
+	<inherits name="org.sagebionetworks.repo.SharedSynpaseDTOs"/>
+	<inherits name="org.sagebionetworks.gwt.JSONAdapter"/>
+	<inherits name="org.sagebionetworks.client.synpaseClientExceptions"/>
 
 	<!-- Specify the paths for translatable code -->
 	<source path='client' />

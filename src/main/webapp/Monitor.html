@@ -5,52 +5,83 @@
 <!-- with a "Quirks Mode" doctype is not supported. -->
 
 <html>
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
-    <!--                                                               -->
-    <!-- Consider inlining CSS to reduce the number of requested files -->
-    <!--                                                               -->
-    <link type="text/css" rel="stylesheet" href="Monitor.css">
+<!--                                                               -->
+<!-- Consider inlining CSS to reduce the number of requested files -->
+<!--                                                               -->
+<link type="text/css" rel="stylesheet" href="Monitor.css">
+<!-- GXT CSS -->
+<link rel="stylesheet" type="text/css" href="resources/css/gxt-all.css" />
+<link rel="stylesheet" type="text/css" href="resources/css/gxt-gray.css" />
 
-    <!--                                           -->
-    <!-- Any title is fine                         -->
-    <!--                                           -->
-    <title>Synapse Monitor</title>
-    
-    <!--                                           -->
-    <!-- This script loads your compiled module.   -->
-    <!-- If you add any GWT meta tags, they must   -->
-    <!-- be added before this line.                -->
-    <!--                                           -->
-    <script type="text/javascript" language="javascript" src="monitor/monitor.nocache.js"></script>
-  </head>
+<!-- YAML -->
+<link rel="stylesheet" href="yaml/core/base.min.css" type="text/css" />
 
-  <!--                                           -->
-  <!-- The body can have arbitrary html, or      -->
-  <!-- you can leave the body empty if you want  -->
-  <!-- to create a completely dynamic UI.        -->
-  <!--                                           -->
-  <body>
 
-    <!-- OPTIONAL: include this if you want history support -->
-    <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
-    
-    <!-- RECOMMENDED if your web app will not function without JavaScript enabled -->
-    <noscript>
-      <div style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
-        Your web browser must have JavaScript enabled
-        in order for this application to display correctly.
-      </div>
-    </noscript>
+<!--                                           -->
+<!-- Any title is fine                         -->
+<!--                                           -->
+<title>Synapse Monitor</title>
 
-    <h1>Web Application Starter Project</h1>
+<!--                                           -->
+<!-- This script loads your compiled module.   -->
+<!-- If you add any GWT meta tags, they must   -->
+<!-- be added before this line.                -->
+<!--                                           -->
+<script type="text/javascript" language="javascript"
+	src="monitor/monitor.nocache.js"></script>
+</head>
 
-			<!-- This is the GWT-generated body -->
-			<div id="alertWrapper" >
-				<div id="alertContainer" >
-				</div> 
-			</div>
+<!--                                           -->
+<!-- The body can have arbitrary html, or      -->
+<!-- you can leave the body empty if you want  -->
+<!-- to create a completely dynamic UI.        -->
+<!--                                           -->
+<body>
+
+	<!-- OPTIONAL: include this if you want history support -->
+	<iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1'
+		style="position: absolute; width: 0; height: 0; border: 0"></iframe>
+
+	<!-- RECOMMENDED if your web app will not function without JavaScript enabled -->
+	<noscript>
+		<div
+			style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
+			Your web browser must have JavaScript enabled in order for this
+			application to display correctly.</div>
+	</noscript>
+
+
+
+	<!-- This is the GWT-generated body -->
+	<div id="alertWrapper">
+		<div id="alertContainer"></div>
+	</div>
+
+	<div class="ym-wrapper">
+		<div class="ym-wbox">
+			<h1 class="ym-gbox">Synapse Monitor</h1>
+			<!-- Main -->
 			<div id="rootPanel"></div>
-  </body>
+			<!-- Footer -->
+			<footer role="contentinfo">
+				<div class="ym-wrapper">
+					<div class="ym-wbox">
+						<div class="ym-grid linearize-level-2">
+							<div class="ym-g33 ym-gr">
+								<div class="ym-gbox-right">
+									<p>
+										Layout based on <a href="http://www.yaml.de">YAML</a>
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</div>
+	</div>
+</body>
 </html>

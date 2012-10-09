@@ -7,7 +7,7 @@ import com.google.gwt.user.client.ui.IsWidget;
  * @author John
  *
  */
-public interface LoginView extends IsWidget {
+public interface LoginView extends IsWidget, View  {
 	
 	/**
 	 * Set this view's presenter

@@ -32,3 +32,15 @@ h1 {
 #closeButton {
   margin: 15px 6px 6px;
 }
+
+.container{
+	width:100%;
+}
+.center{
+	margin-left:auto;
+	margin-right:auto;
+}
+
+#rootPanel{
+	width:700px;
+}

@@ -9,6 +9,10 @@ import com.google.gwt.inject.client.Ginjector;
 @GinModules(MonitorClientModule.class)
 public interface MonitorGinjector extends Ginjector {
 
+	/**
+	 * The main event buss
+	 * @return
+	 */
 	EventBus getEventBus();
 	
 	/**
