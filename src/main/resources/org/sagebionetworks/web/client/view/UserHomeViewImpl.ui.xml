@@ -5,10 +5,26 @@
     <ui:style>
     </ui:style>
 
-  <g:HorizontalPanel>
-    <g:Label>Keep your ducks</g:Label>
-    <g:Label>in a row</g:Label>
-  </g:HorizontalPanel>
+    <g:HTMLPanel>
 
+        <h4>Instructions</h4>
+        <p class="box info" ui:field="infoBox" ></p>
+        <h4>Add to Watch List</h4>
+        <form class="ym-form">
+            <h6>To add an entity to your watch list paste its synapse id (i.e. 'syn123')</h6>
+            <div class="ym-fbox-text">
+                <label for="your-id">SynapseId</label>
+                <input type="text" name="your-id" id="your-id" size="20" />
+                <g:Button styleName="ym-button ym-add">add</g:Button>
+            </div>
+        </form>
+        <h4>Current Watch List</h4>
+        <table class="bordertable" ui:field="table" >
+            <!-- This gets filled in by the view -->
+            <thead ui:field="tableHead"></thead>
+            <!-- This gets filled in by the view -->
+            <tbody ui:field="tableBody"></tbody>
+        </table>
+    </g:HTMLPanel>
 
 </ui:UiBinder>

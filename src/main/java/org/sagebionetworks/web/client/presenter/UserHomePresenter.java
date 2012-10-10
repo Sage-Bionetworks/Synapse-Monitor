@@ -1,5 +1,7 @@
 package org.sagebionetworks.web.client.presenter;
 
+import org.sagebionetworks.web.client.cookie.SessionManager;
+import org.sagebionetworks.web.client.cookie.SessionManagerImpl;
 import org.sagebionetworks.web.client.place.UserHome;
 import org.sagebionetworks.web.client.view.UserHomeView;
 
@@ -20,12 +22,15 @@ public class UserHomePresenter extends AbstractActivity implements UserHomeView.
 	private UserHome place;
 	private PlaceController controller;
 	private UserHomeView view;
+	private SessionManager sessionManager;
 	
 	@Inject
-	public UserHomePresenter(UserHomeView view){
+	public UserHomePresenter(UserHomeView view, SessionManager sessionManager){
 		this.view = view;
+		this.sessionManager = sessionManager;
 		// Wire the view to this presenter
 		view.setPresenter(this);
+		view.setUserInfo(sessionManager.getUserDisplayName(), sessionManager.getUserEmail());
 	}
 
 	@Override

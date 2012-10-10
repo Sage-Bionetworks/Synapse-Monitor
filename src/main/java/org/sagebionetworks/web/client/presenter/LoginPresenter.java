@@ -68,7 +68,6 @@ public class LoginPresenter extends AbstractActivity implements LoginView.Presen
 					// Save the session
 					sessionManager.saveSession(usd);
 					// Send the user to their home page
-					view.showInfo(null, "Welcome: "+sessionManager.getUserDisplayName());
 					controller.goTo(new UserHome(sessionManager.getUserPrincipalId()));
 				}
 				
