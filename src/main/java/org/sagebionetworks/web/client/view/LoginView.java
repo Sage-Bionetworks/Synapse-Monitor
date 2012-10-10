@@ -1,5 +1,8 @@
 package org.sagebionetworks.web.client.view;
 
+import org.sagebionetworks.web.client.mvp.ActivityPresenter;
+import org.sagebionetworks.web.client.place.Login;
+
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
@@ -31,7 +34,7 @@ public interface LoginView extends IsWidget, View  {
 	 * The presenter contract.
 	 *
 	 */
-	public interface Presenter {
+	public interface Presenter extends ActivityPresenter<Login> {
 		
 		/**
 		 * Called when the login button is pushed.

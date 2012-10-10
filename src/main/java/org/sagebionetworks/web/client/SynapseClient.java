@@ -21,6 +21,6 @@ public interface SynapseClient extends RemoteService {
 	 * @return
 	 * @throws SynapseException
 	 */
-	public String login(String username, String password) throws SynapseException;
+	public String getUserData(String token) throws SynapseException;
 
 }

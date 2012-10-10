@@ -31,7 +31,7 @@ public class Monitor implements EntryPoint {
 	    PlaceController placeController = new PlaceController(eventBus);
 
 		// Start ActivityManager for the main widget with our ActivityMapper
-		AppActivityMapper activityMapper = new AppActivityMapper(injector);
+		AppActivityMapper activityMapper = new AppActivityMapper(injector, placeController);
 		ActivityManager activityManager = new ActivityManager(activityMapper, eventBus);
 		activityManager.setDisplay(appWidget);
 		
@@ -44,12 +44,6 @@ public class Monitor implements EntryPoint {
 		historyHandler.register(placeController, eventBus, activityMapper.getDefaultPlace());
 
 		RootPanel.get("rootPanel").add(appWidget);
-
-//		GlobalApplicationState globalApplicationState = injector.getGlobalApplicationState();
-//	    globalApplicationState.setPlaceController(placeController);
-//	    globalApplicationState.setAppPlaceHistoryMapper(historyMapper);
-//	    globalApplicationState.setActivityMapper(activityMapper);
-
 		
 		// Goes to place represented on URL or default place
 		historyHandler.handleCurrentHistory();

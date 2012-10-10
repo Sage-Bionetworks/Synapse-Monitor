@@ -2,12 +2,15 @@ package org.sagebionetworks.web.client.presenter;
 
 import org.sagebionetworks.repo.model.UserSessionData;
 import org.sagebionetworks.web.client.SynapseClientAsync;
-import org.sagebionetworks.web.client.cookie.CookieProvider;
+import org.sagebionetworks.web.client.cookie.SessionManager;
+import org.sagebionetworks.web.client.place.Login;
+import org.sagebionetworks.web.client.place.UserHome;
 import org.sagebionetworks.web.client.transform.JSONEntityFactory;
 import org.sagebionetworks.web.client.view.LoginView;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
@@ -22,44 +25,68 @@ public class LoginPresenter extends AbstractActivity implements LoginView.Presen
 	
 	LoginView view;
 	SynapseClientAsync synapseAsynch;
-	CookieProvider cookieProvider;
+	SessionManager sessionManager;
 	JSONEntityFactory entityFactory;
+	PlaceController controller;
+	Login place;
 	
 	@Inject
-	public LoginPresenter(CookieProvider cookieProvider, SynapseClientAsync synapseAsynch, LoginView view,JSONEntityFactory entityFactory){
+	public LoginPresenter(SessionManager sessionManager, SynapseClientAsync synapseAsynch, LoginView view, JSONEntityFactory entityFactory){
+		this.sessionManager = sessionManager;
 		this.synapseAsynch = synapseAsynch;
 		this.view = view;
 		this.entityFactory = entityFactory;
 		// Set the presenter
 		this.view.setPresenter(this);
 	}
+	
+	@Override
+	public void setPlace(Login place, PlaceController controller) {
+		this.place = place;
+		this.controller = controller;
+	}
 
 	@Override
 	public void start(AcceptsOneWidget panel, EventBus eventBus) {
+		// First clear any session data
+		sessionManager.clearSession();
 		// Install the view
 		panel.setWidget(view);
+		// Did the user fail to authenticate?
+		if(Login.TOKEN_AUTH_FAILED.equals(place.getToken())){
+			view.showErrorMessage("Authentication failed");
+		}else if(Login.TOKEN_ERROR.equals(place.getToken())){
+			view.showErrorMessage("Failed to connect to Synapse");
+		}else if(!Login.TOKEN_NEW.equals(place.getToken())){
+			// Try to login with the token that the user provider
+			synapseAsynch.getUserData(place.getToken(), new AsyncCallback<String>() {
+				
+				@Override
+				public void onSuccess(String json) {
+					// Convert json to the object.
+					UserSessionData usd = entityFactory.createEntity(json, UserSessionData.class);
+					// Save the session
+					sessionManager.saveSession(usd);
+					// Send the user to their home page
+					view.showInfo(null, "Welcome: "+sessionManager.getUserDisplayName());
+					controller.goTo(new UserHome(sessionManager.getUserPrincipalId()));
+				}
+				
+				@Override
+				public void onFailure(Throwable caught) {
+					view.showErrorMessage(caught.getMessage());
+				}
+			});
+		}
 	}
+	
+
 
 	@Override
 	public void login() {
-		// Trigger the login
-		String username = view.getUserName();
-		String password = view.getPassword();
-		synapseAsynch.login(username, password, new AsyncCallback<String>() {
-			@Override
-			public void onSuccess(String json) {
-				
-				UserSessionData usd = entityFactory.createEntity(json, UserSessionData.class);
-				// Set the session token
-				view.showInfo("Welcome: ", usd.getProfile().getDisplayName());
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				view.showErrorMessage(caught.getMessage());
-			}
-		});
-		
+
 	}
+
+
 
 }

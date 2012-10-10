@@ -16,13 +16,14 @@ public class SynapseClientImpl extends RemoteServiceServlet implements	SynapseCl
 	@Inject
 	private SynapseProvider synapseProvide;
 
+
 	@Override
-	public String login(String username, String password) throws SynapseException {
-		// Login
-		Synapse syanpse = synapseProvide.createNewSynapse();
-		UserSessionData session = syanpse.login(username, password);
+	public String getUserData(String token) throws SynapseException {
+		Synapse synapse = synapseProvide.createNewSynapse();
+		synapse.setSessionToken(token);
+		UserSessionData data = synapse.getUserSessionData();
 		try {
-			return EntityFactory.createJSONStringForEntity(session);
+			return EntityFactory.createJSONStringForEntity(data);
 		} catch (JSONObjectAdapterException e) {
 			throw new SynapseException(e);
 		}

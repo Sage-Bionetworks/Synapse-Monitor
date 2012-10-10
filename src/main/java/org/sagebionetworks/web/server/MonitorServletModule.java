@@ -1,5 +1,6 @@
 package org.sagebionetworks.web.server;
 
+import org.sagebionetworks.web.server.servlet.LoginServlet;
 import org.sagebionetworks.web.server.servlet.SynapseClientImpl;
 import org.sagebionetworks.web.server.servlet.SynapseProvider;
 import org.sagebionetworks.web.server.servlet.SynapseProviderImpl;
@@ -25,5 +26,9 @@ public class MonitorServletModule extends ServletModule {
 		// Synapse Provider
 		bind(SynapseProviderImpl.class).in(Singleton.class);
 		bind(SynapseProvider.class).to(SynapseProviderImpl.class);
+		
+		// setup GWTupload
+		bind(LoginServlet.class).in(Singleton.class);
+		serve("/monitor/service/login").with(LoginServlet.class);
 	}
 }

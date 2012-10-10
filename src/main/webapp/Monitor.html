@@ -12,13 +12,17 @@
 <!-- Consider inlining CSS to reduce the number of requested files -->
 <!--                                                               -->
 <link type="text/css" rel="stylesheet" href="Monitor.css">
-<!-- GXT CSS -->
-<link rel="stylesheet" type="text/css" href="resources/css/gxt-all.css" />
-<link rel="stylesheet" type="text/css" href="resources/css/gxt-gray.css" />
 
 <!-- YAML -->
 <link rel="stylesheet" href="yaml/core/base.min.css" type="text/css" />
-
+<!-- import screen layout | Screen-Layout einbinden  -->
+<link rel="stylesheet" href="yaml/navigation/hlist.css" type="text/css" />
+<link rel="stylesheet" href="yaml/forms/gray-theme.css" type="text/css" />
+<link rel="stylesheet" href="yaml/screen/typography.css" type="text/css" />
+<link rel="stylesheet" href="yaml/screen/screen-FULLPAGE-layout.css"
+	type="text/css" />
+<!--  import print layout | Druck-Layout einbinden  -->
+<link rel="stylesheet" href="yaml/print/print.css" type="text/css" />
 
 <!--                                           -->
 <!-- Any title is fine                         -->
@@ -59,29 +63,47 @@
 	<div id="alertWrapper">
 		<div id="alertContainer"></div>
 	</div>
+	<header>
+		<div class="ym-wrapper">
+			<div class="ym-wbox">
+				<h1>Synapse Monitor</h1>
+			</div>
+		</div>
+	</header>
+	<nav id="nav">
+		<div class="ym-wrapper">
+			<div class="ym-hlist">
+				<ul>
+					<li class="active"><strong>Active</strong></li>
+					<li><a href="#">Link</a></li>
+					<li><a href="#">Link</a></li>
+					<li><a href="#">Link</a></li>
+					<li><a href="#">Link</a></li>
+				</ul>
+				<form class="ym-searchform">
+					<input class="ym-searchfield" type="search" placeholder="Search..." />
+					<input class="ym-searchbutton" type="submit" value="Search" />
+				</form>
+			</div>
+		</div>
+	</nav>
 
-	<div class="ym-wrapper">
-		<div class="ym-wbox">
-			<h1 class="ym-gbox">Synapse Monitor</h1>
-			<!-- Main -->
-			<div id="rootPanel"></div>
-			<!-- Footer -->
-			<footer role="contentinfo">
-				<div class="ym-wrapper">
-					<div class="ym-wbox">
-						<div class="ym-grid linearize-level-2">
-							<div class="ym-g33 ym-gr">
-								<div class="ym-gbox-right">
-									<p>
-										Layout based on <a href="http://www.yaml.de">YAML</a>
-									</p>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</footer>
+	<div id="main">
+		<div class="ym-wrapper">
+			<div class="ym-wbox">
+				<div id="rootPanel" class="ym-grid linearize-level-1"></div>
+			</div>
 		</div>
 	</div>
+	<footer>
+		<div class="ym-wrapper">
+			<div class="ym-wbox">
+				<p>
+					© Sagebionetworks 2012 &ndash; Layout based on <a
+						href="http://www.yaml.de">YAML</a>
+				</p>
+			</div>
+		</div>
+	</footer>
 </body>
 </html>

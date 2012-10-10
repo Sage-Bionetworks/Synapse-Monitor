@@ -10,6 +10,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public interface SynapseClientAsync {
 
-	void login(String username, String password, AsyncCallback<String> callback);
+	/**
+	 * Get the User's data.
+	 * 
+	 * @param token
+	 * @param callback
+	 */
+	void getUserData(String token, AsyncCallback<String> callback);
 
 }
