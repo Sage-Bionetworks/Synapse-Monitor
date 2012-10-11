@@ -1,0 +1,29 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+    xmlns:g="urn:import:com.google.gwt.user.client.ui" >
+
+    <ui:style>
+    </ui:style>
+
+    <g:HTMLPanel>
+		 <div class="ym-grid" >
+            <!-- This is the left place holder -->
+            <div class="ym-g33 ym-gl"><p></p></div>
+            <!-- The form is in the middle -->
+            <div class="ym-g33 ym-gl" >
+                <div class="ym-gbox center">
+                    <h4 ui:field="addingHeader"></h4>
+                    <div class="snippet-container" stye="undefined;">
+                        <image class="flexible ceanter" alt="" src="images/ajax-loader.gif" />
+                    </div>
+                </div>
+            </div>
+			<!-- The right place holder -->
+            <div class="ym-g33 ym-gl" ><p></p></div>
+        </div>
+        <div class="ym-grid" height="700xp">
+            <p></p>         
+        </div>
+    </g:HTMLPanel>
+
+</ui:UiBinder>

@@ -6,6 +6,7 @@ import org.sagebionetworks.web.client.cookie.SessionManager;
 import org.sagebionetworks.web.client.place.Login;
 import org.sagebionetworks.web.client.place.UserHome;
 import org.sagebionetworks.web.client.transform.JSONEntityFactory;
+import org.sagebionetworks.web.client.view.WaitView;
 import org.sagebionetworks.web.client.view.LoginView;
 
 import com.google.gwt.activity.shared.AbstractActivity;
@@ -29,13 +30,15 @@ public class LoginPresenter extends AbstractActivity implements LoginView.Presen
 	JSONEntityFactory entityFactory;
 	PlaceController controller;
 	Login place;
+	WaitView messageView;
 	
 	@Inject
-	public LoginPresenter(SessionManager sessionManager, SynapseClientAsync synapseAsynch, LoginView view, JSONEntityFactory entityFactory){
+	public LoginPresenter(SessionManager sessionManager, SynapseClientAsync synapseAsynch, LoginView view, JSONEntityFactory entityFactory, WaitView messageView){
 		this.sessionManager = sessionManager;
 		this.synapseAsynch = synapseAsynch;
 		this.view = view;
 		this.entityFactory = entityFactory;
+		this.messageView = messageView;
 		// Set the presenter
 		this.view.setPresenter(this);
 	}
@@ -47,7 +50,7 @@ public class LoginPresenter extends AbstractActivity implements LoginView.Presen
 	}
 
 	@Override
-	public void start(AcceptsOneWidget panel, EventBus eventBus) {
+	public void start(final AcceptsOneWidget panel, EventBus eventBus) {
 		// First clear any session data
 		sessionManager.clearSession();
 		// Install the view
@@ -59,6 +62,8 @@ public class LoginPresenter extends AbstractActivity implements LoginView.Presen
 			view.showErrorMessage("Failed to connect to Synapse");
 		}else if(!Login.TOKEN_NEW.equals(place.getToken())){
 			// Try to login with the token that the user provider
+			messageView.setMessage("Logging in to Synapse...");
+			panel.setWidget(messageView);
 			synapseAsynch.getUserData(place.getToken(), new AsyncCallback<String>() {
 				
 				@Override
@@ -74,6 +79,8 @@ public class LoginPresenter extends AbstractActivity implements LoginView.Presen
 				@Override
 				public void onFailure(Throwable caught) {
 					view.showErrorMessage(caught.getMessage());
+					// Let them login again
+					panel.setWidget(view);
 				}
 			});
 		}

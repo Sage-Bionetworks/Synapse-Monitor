@@ -2,6 +2,7 @@ package org.sagebionetworks.web.client.presenter;
 
 import org.sagebionetworks.web.client.cookie.SessionManager;
 import org.sagebionetworks.web.client.cookie.SessionManagerImpl;
+import org.sagebionetworks.web.client.place.Login;
 import org.sagebionetworks.web.client.place.UserHome;
 import org.sagebionetworks.web.client.view.UserHomeView;
 
@@ -36,7 +37,11 @@ public class UserHomePresenter extends AbstractActivity implements UserHomeView.
 	@Override
 	public void setPlace(UserHome place, PlaceController controller) {
 		this.place = place;
-		this.controller = controller;		
+		this.controller = controller;
+		// If we do not have a session token then send the user back to login
+		if(sessionManager.hasSession()){
+			controller.goTo(new Login(Login.TOKEN_NEW));
+		}
 	}
 
 	@Override

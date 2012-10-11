@@ -10,12 +10,12 @@
         <h4>Instructions</h4>
         <p class="box info" ui:field="infoBox" ></p>
         <h4>Add to Watch List</h4>
-        <form class="ym-form">
+        <form class="ym-form" action="monitor/service/add" method="post">
             <h6>To add an entity to your watch list paste its synapse id (i.e. 'syn123')</h6>
             <div class="ym-fbox-text">
-                <label for="your-id">SynapseId</label>
-                <input type="text" name="your-id" id="your-id" size="20" />
-                <g:Button styleName="ym-button ym-add">add</g:Button>
+                <label for="synapseId">SynapseId</label>
+                <input type="text" name="synapseId" id="synapseId" size="20" />
+                <button type="submit" class="ym-button ym-add" value="submit" name="Add" >Add</button>
             </div>
         </form>
         <h4>Current Watch List</h4>

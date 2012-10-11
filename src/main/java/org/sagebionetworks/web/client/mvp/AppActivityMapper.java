@@ -1,8 +1,10 @@
 package org.sagebionetworks.web.client.mvp;
 
 import org.sagebionetworks.web.client.MonitorGinjector;
+import org.sagebionetworks.web.client.place.Add;
 import org.sagebionetworks.web.client.place.Login;
 import org.sagebionetworks.web.client.place.UserHome;
+import org.sagebionetworks.web.client.presenter.AddPresenter;
 import org.sagebionetworks.web.client.presenter.LoginPresenter;
 import org.sagebionetworks.web.client.presenter.UserHomePresenter;
 
@@ -29,23 +31,19 @@ public class AppActivityMapper implements ActivityMapper {
 
 	@Override
 	public Activity getActivity(Place place) {
-		// If this is a long request then process it.
+
+		
+		// The main switch
 		if(place instanceof Login){
 			// Show the login page.
 			return createLoginPlace((Login)place);
-		}
-		
-		// If we do not have a user's session token then the only place we can go is the login place
-		if(!injector.getSessionManager().hasSession()){
-			return createLoginPlace(new Login(Login.TOKEN_NEW));
-		}
-		
-		// The main page switch.
-		if(place instanceof UserHome){
+		}else if(place instanceof UserHome){
 			// the user home
 			return createUserHomePlace((UserHome) place);
-		}
-		else{
+		}else if(place instanceof Add){
+			// the user home
+			return createAddPlace((Add) place);
+		}else{
 			throw new IllegalArgumentException("Unknown place: "+place);
 		}
 	}
@@ -73,9 +71,16 @@ public class AppActivityMapper implements ActivityMapper {
 		presenter.setPlace(place, placeController);
 		return presenter;
 	}
+	
+	public Activity createAddPlace(Add place){
+		AddPresenter presenter = injector.createAddPresenter();
+		// Wire the presenter with navigation.
+		presenter.setPlace(place, placeController);
+		return presenter;
+	}
 
 	public Place getDefaultPlace() {
-		return new Login(Login.TOKEN_NEW);
+		return new UserHome("0");
 	}
 
 }

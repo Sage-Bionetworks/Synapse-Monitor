@@ -1,6 +1,7 @@
 package org.sagebionetworks.web.client;
 
 import org.sagebionetworks.client.exceptions.SynapseException;
+import org.sagebionetworks.web.shared.EntityData;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -22,5 +23,15 @@ public interface SynapseClient extends RemoteService {
 	 * @throws SynapseException
 	 */
 	public String getUserData(String token) throws SynapseException;
+	
+	/**
+	 * Get data about an entity.
+	 * 
+	 * @param token
+	 * @param entityId
+	 * @return
+	 * @throws SynapseException
+	 */
+	public EntityData getEntityData(String token, String entityId) throws SynapseException;
 
 }

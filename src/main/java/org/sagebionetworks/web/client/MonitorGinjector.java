@@ -1,6 +1,7 @@
 package org.sagebionetworks.web.client;
 
 import org.sagebionetworks.web.client.cookie.SessionManager;
+import org.sagebionetworks.web.client.presenter.AddPresenter;
 import org.sagebionetworks.web.client.presenter.LoginPresenter;
 import org.sagebionetworks.web.client.presenter.UserHomePresenter;
 
@@ -28,6 +29,12 @@ public interface MonitorGinjector extends Ginjector {
 	 * @return
 	 */
 	UserHomePresenter createUserHomePresenter();
+	
+	/**
+	 * The user home presenter.
+	 * @return
+	 */
+	AddPresenter createAddPresenter();
 	
 	
 	/**

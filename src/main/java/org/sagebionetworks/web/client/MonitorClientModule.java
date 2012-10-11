@@ -12,6 +12,8 @@ import org.sagebionetworks.web.client.cookie.SessionManager;
 import org.sagebionetworks.web.client.cookie.SessionManagerImpl;
 import org.sagebionetworks.web.client.transform.JSONEntityFactory;
 import org.sagebionetworks.web.client.transform.JSONEntityFactoryImpl;
+import org.sagebionetworks.web.client.view.WaitView;
+import org.sagebionetworks.web.client.view.WaitViewImpl;
 import org.sagebionetworks.web.client.view.LoginView;
 import org.sagebionetworks.web.client.view.LoginViewImpl;
 import org.sagebionetworks.web.client.view.UserHomeView;
@@ -51,6 +53,10 @@ public class MonitorClientModule extends AbstractGinModule {
 		// UserHome
 		bind(UserHomeViewImpl.class).in(Singleton.class);
 		bind(UserHomeView.class).to(UserHomeViewImpl.class);
+		
+		// AddView
+		bind(WaitViewImpl.class).in(Singleton.class);
+		bind(WaitView.class).to(WaitViewImpl.class);
 		
 		// JSONAdapters
 		bind(JSONObjectAdapter.class).to(JSONObjectGwt.class);

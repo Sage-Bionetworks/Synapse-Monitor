@@ -15,7 +15,7 @@ public class Login extends Place {
 	 */
 	public static String TOKEN_ERROR = "ERROR";
 	public static String TOKEN_AUTH_FAILED = "AUTH_FAILED";
-	public static String TOKEN_NEW = "NEW";
+	public static String TOKEN_NEW = "0";
 	
     private String token;
 
