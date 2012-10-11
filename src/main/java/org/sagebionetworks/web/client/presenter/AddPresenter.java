@@ -2,6 +2,7 @@ package org.sagebionetworks.web.client.presenter;
 
 
 import org.sagebionetworks.web.client.SynapseClientAsync;
+import org.sagebionetworks.web.client.UserDataStoreAsync;
 import org.sagebionetworks.web.client.cookie.SessionManager;
 import org.sagebionetworks.web.client.mvp.ActivityPresenter;
 import org.sagebionetworks.web.client.place.Add;
@@ -16,18 +17,27 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 
+/**
+ * Control for adding data.
+ * @author John
+ *
+ */
 public class AddPresenter extends AbstractActivity implements ActivityPresenter<Add> {
 	
 	
 	private Add place;
 	private PlaceController controller;
 	private WaitView view;
-	SynapseClientAsync client;
-	SessionManager session;
+	private SynapseClientAsync client;
+	private SessionManager session;
+	private UserDataStoreAsync dataStore;
 	
 	@Inject
-	public AddPresenter(WaitView view, SynapseClientAsync client, SessionManager session){
+	public AddPresenter(WaitView view, SynapseClientAsync client, SessionManager session, UserDataStoreAsync dataStore){
 		this.view = view;
+		this.client = client;
+		this.session = session;
+		this.dataStore = dataStore;
 	}
 
 	@Override
@@ -40,7 +50,21 @@ public class AddPresenter extends AbstractActivity implements ActivityPresenter<
 			
 			@Override
 			public void onSuccess(EntityData result) {
-				// TODO Auto-generated method stub
+				// Add this for the user
+				dataStore.addEntitToUsersWatchList(session.getUserPrincipalId(), result, new AsyncCallback<Void>() {
+					
+					@Override
+					public void onSuccess(Void result) {
+						// go home.
+						controller.goTo(new UserHome(session.getUserPrincipalId()));
+					}
+					
+					@Override
+					public void onFailure(Throwable caught) {
+						view.showErrorMessage(caught.getMessage());
+						controller.goTo(new UserHome(session.getUserPrincipalId()));
+					}
+				});
 				
 			}
 			

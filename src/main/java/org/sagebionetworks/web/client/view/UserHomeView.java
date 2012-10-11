@@ -20,6 +20,17 @@ public interface UserHomeView extends IsWidget, View  {
 	 */
 	public void setUserInfo(String username, String email);
 	
+	/**
+	 * Clear the list of data.
+	 */
+	public void clearList();
+	
+	/**
+	 * Add a row to the list.
+	 * @param id
+	 */
+	public void addRowToList(String[] row);
+	
 	
 	/**
 	 * The presenter contract.

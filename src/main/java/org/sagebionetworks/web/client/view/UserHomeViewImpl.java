@@ -1,5 +1,9 @@
 package org.sagebionetworks.web.client.view;
 
+import java.util.List;
+
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.ParagraphElement;
 import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.dom.client.TableRowElement;
@@ -41,17 +45,17 @@ public class UserHomeViewImpl extends Composite implements UserHomeView {
 		};
 		// Set the table headers
 		setTableHeaders(columns);
-		// Fill in the table with data.
-		for(int row=0; row<25; row++){
-			TableRowElement tr = TableRowElement.as(DOM.createTR());
-			for(int col=0; col<columns.length; col++){
-				Element td = DOM.createTD();
-				// set the text
-				DOM.setInnerText(td, "row:"+row+"col:"+col);
-				tr.appendChild(td);
-			}
-			tableBody.appendChild(tr);
-		}
+//		// Fill in the table with data.
+//		for(int row=0; row<25; row++){
+//			TableRowElement tr = TableRowElement.as(DOM.createTR());
+//			for(int col=0; col<columns.length; col++){
+//				Element td = DOM.createTD();
+//				// set the text
+//				DOM.setInnerText(td, "row:"+row+"col:"+col);
+//				tr.appendChild(td);
+//			}
+//			tableBody.appendChild(tr);
+//		}
 	}
 
 	/**
@@ -87,6 +91,27 @@ public class UserHomeViewImpl extends Composite implements UserHomeView {
 		this.username = username;
 		this.email = email;
 		infoBox.setInnerText("Welcome '"+username+"' the following is the list of entites you are currently watching.  When any of these entites change you will be notified by email at: "+email);
+	}
+
+	@Override
+	public void clearList() {
+		// Remove all children
+		while(tableBody.getChildCount() > 0){
+			Node child = tableBody.getChild(0);
+			tableBody.removeChild(child);
+		}
+	}
+
+	@Override
+	public void addRowToList(String[] row) {
+		TableRowElement tr = TableRowElement.as(DOM.createTR());
+		for(int col=0; col<row.length; col++){
+			Element td = DOM.createTD();
+			// set the text
+			DOM.setInnerText(td, row[col]);
+			tr.appendChild(td);
+		}
+		tableBody.appendChild(tr);
 	}
 
 }

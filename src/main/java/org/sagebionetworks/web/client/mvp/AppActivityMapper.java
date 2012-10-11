@@ -32,6 +32,18 @@ public class AppActivityMapper implements ActivityMapper {
 	@Override
 	public Activity getActivity(Place place) {
 
+		// If we to not have a session then the the only place we can go is login
+		if(!injector.getSessionManager().hasSession()){
+			// Keep the passed place if it is a login place.
+			Login newLogin = null;
+			if(place instanceof Login){
+				newLogin = (Login) place;
+			}else{
+				// We need a new login place.
+				newLogin = new Login(Login.TOKEN_NEW);
+			}
+			return createLoginPlace(newLogin);
+		}
 		
 		// The main switch
 		if(place instanceof Login){

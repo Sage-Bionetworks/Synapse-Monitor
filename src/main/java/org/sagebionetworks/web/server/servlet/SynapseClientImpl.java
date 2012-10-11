@@ -15,7 +15,7 @@ import com.google.inject.Inject;
 @SuppressWarnings("serial")
 public class SynapseClientImpl extends RemoteServiceServlet implements	SynapseClient {
 	
-	private static final String ENTITY_BASE_URL = "https://synapse.sagebase.org/#Synapse:";
+	public static final String ENTITY_BASE_URL = "https://synapse.sagebase.org/#Synapse:";
 	@Inject
 	private SynapseProvider synapseProvide;
 
@@ -42,12 +42,23 @@ public class SynapseClientImpl extends RemoteServiceServlet implements	SynapseCl
 		// Download the entity
 		Entity e = synapse.getEntityById(entityId);
 		// Copy over the fields we need
+		EntityData data = translateToEntityData(e);
+		// Return the data
+		return data;
+	}
+
+
+	/**
+	 * @param e
+	 * @return
+	 */
+	public static EntityData translateToEntityData(Entity e) {
 		EntityData data = new EntityData();
 		data.setName(e.getName());
 		data.setEtag(e.getEtag());
 		data.setDescription(e.getDescription());
-		data.setUrl(ENTITY_BASE_URL+entityId);
-		// Return the data
+		data.setUrl(ENTITY_BASE_URL+e.getId());
+		data.setId(e.getId());
 		return data;
 	}
 

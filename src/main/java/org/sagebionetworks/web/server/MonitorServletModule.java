@@ -2,13 +2,16 @@ package org.sagebionetworks.web.server;
 
 import java.util.Properties;
 
+import org.sagebionetworks.web.client.UserDataStore;
 import org.sagebionetworks.web.server.servlet.AddServlet;
+import org.sagebionetworks.web.server.servlet.AmazonClientFactory;
 import org.sagebionetworks.web.server.servlet.AmazonClientFactoryImpl;
 import org.sagebionetworks.web.server.servlet.LoginServlet;
 import org.sagebionetworks.web.server.servlet.SynapseClientImpl;
 import org.sagebionetworks.web.server.servlet.SynapseProvider;
 import org.sagebionetworks.web.server.servlet.SynapseProviderImpl;
 import org.sagebionetworks.web.server.servlet.UserDataStoreImpl;
+import org.sagebionetworks.web.server.servlet.filter.TimingFilter;
 
 import com.google.inject.Singleton;
 import com.google.inject.name.Names;
@@ -25,6 +28,11 @@ public class MonitorServletModule extends ServletModule {
 
 	@Override
 	protected void configureServlets() {
+		
+		// filter all call through this filter
+		filter("/monitor/*").through(TimingFilter.class);
+		bind(TimingFilter.class).in(Singleton.class);
+		
 		// Setup the Search service
 		bind(SynapseClientImpl.class).in(Singleton.class);
 		serve("/monitor/synapse").with(SynapseClientImpl.class);
@@ -36,6 +44,14 @@ public class MonitorServletModule extends ServletModule {
 		// Synapse Provider
 		bind(SynapseProviderImpl.class).in(Singleton.class);
 		bind(SynapseProvider.class).to(SynapseProviderImpl.class);
+		
+		// Data provider
+		bind(UserDataStoreImpl.class).in(Singleton.class);
+		bind(UserDataStore.class).to(UserDataStoreImpl.class);
+		
+		// Amazon client factory
+		bind(AmazonClientFactoryImpl.class).in(Singleton.class);
+		bind(AmazonClientFactory.class).to(AmazonClientFactoryImpl.class);
 		
 		// setup Login
 		bind(LoginServlet.class).in(Singleton.class);
