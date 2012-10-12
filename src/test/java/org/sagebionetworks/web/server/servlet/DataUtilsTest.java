@@ -9,8 +9,6 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
-import com.amazonaws.util.StringInputStream;
-
 public class DataUtilsTest {
 	
 	@Test

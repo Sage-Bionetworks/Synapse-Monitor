@@ -7,6 +7,7 @@ import org.sagebionetworks.web.server.servlet.AmazonClientFactory;
 import org.sagebionetworks.web.server.servlet.AmazonClientFactoryImpl;
 import org.sagebionetworks.web.server.servlet.EditServlet;
 import org.sagebionetworks.web.server.servlet.LoginServlet;
+import org.sagebionetworks.web.server.servlet.MonitorWorkerServelet;
 import org.sagebionetworks.web.server.servlet.SynapseProvider;
 import org.sagebionetworks.web.server.servlet.SynapseProviderImpl;
 import org.sagebionetworks.web.server.servlet.UserDataStoreImpl;
@@ -52,10 +53,13 @@ public class MonitorServletModule extends ServletModule {
 		bind(LoginServlet.class).in(Singleton.class);
 		serve("/monitor/service/login").with(LoginServlet.class);
 		
-		// Add
+		// Edit
 		bind(EditServlet.class).in(Singleton.class);
 		serve("/monitor/service/edit/*").with(EditServlet.class);
 		
+		// The worker
+		bind(MonitorWorkerServelet.class).in(Singleton.class);
+		serve("/monitor/service/worker/*").with(MonitorWorkerServelet.class);
 		
 		// Bind the environment variables
 		Properties props = new Properties();

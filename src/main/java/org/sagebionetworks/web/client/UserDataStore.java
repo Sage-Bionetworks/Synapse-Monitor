@@ -35,6 +35,7 @@ public interface UserDataStore extends RemoteService {
 	 */
 	public String getUserData(String token) throws SynapseException;
 	
+	
 	/**
 	 * Remove an entity from the watch list.
 	 * @param sessionToken

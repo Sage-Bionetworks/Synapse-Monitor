@@ -40,6 +40,7 @@ public class AppActivityMapper implements ActivityMapper {
 				// We need a new login place.
 				newLogin = new Login(Login.TOKEN_NEW);
 			}
+			// We also need to clear all history
 			return createLoginPlace(newLogin);
 		}
 		

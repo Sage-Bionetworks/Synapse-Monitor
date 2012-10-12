@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sagebionetworks.client.exceptions.SynapseException;
 import org.sagebionetworks.repo.model.UserSessionData;
 import org.sagebionetworks.web.client.place.Login;
@@ -22,9 +24,10 @@ import com.google.inject.Inject;
 public class LoginServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
+	static private Log log = LogFactory.getLog(LoginServlet.class);
 	
 	@Inject
-	private SynapseProvider synapseProvide;
+	private UserDataStoreImpl userDataStore;
 	
 	@Override
 	protected void doGet(HttpServletRequest rBasic, HttpServletResponse resp)	throws ServletException, IOException {
@@ -36,6 +39,7 @@ public class LoginServlet extends HttpServlet {
 		String password = req.getParameter("password");
 		// Did they pass a username and password.
 		if(username == null | password == null){
+			log.debug("Username or password is null, redirecting as a new login");
 			// Send them back to gather username and password
 			Login place = new Login(Login.TOKEN_NEW);
 			resp.sendRedirect(referer+place.getURL());
@@ -43,17 +47,20 @@ public class LoginServlet extends HttpServlet {
 		}
 		// Try to authenticate
 		try {
-			UserSessionData data = synapseProvide.createNewSynapse().login(username, password);
+			log.debug("Authenticating user: "+username+"...");
+			UserSessionData data = userDataStore.login(username, password);
 			// Login the user using the token
 			Login place = new Login(data.getSessionToken());
 			resp.sendRedirect(referer+place.getURL());
 			return;
 		} catch (SynapseException e) {
+			log.debug("Authentication failed. user: "+username+" message:"+e.getMessage());
 			// Authentication failed
 			Login place = new Login(Login.TOKEN_AUTH_FAILED);
 			resp.sendRedirect(referer+place.getURL());
 			return;
 		}catch (Throwable e) {
+			log("Authentication failed. user: "+username+" message:"+e.getMessage());
 			// Authentication failed
 			Login place = new Login(Login.TOKEN_ERROR);
 			resp.sendRedirect(referer+place.getURL());

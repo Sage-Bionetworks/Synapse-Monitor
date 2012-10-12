@@ -1,18 +1,18 @@
 package org.sagebionetworks.web.server.servlet;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Mockito.when;
+
 import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
-import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
 import org.sagebionetworks.client.Synapse;
 import org.sagebionetworks.client.exceptions.SynapseException;
 import org.sagebionetworks.repo.model.EntityBundle;
@@ -21,6 +21,7 @@ import org.sagebionetworks.repo.model.UserProfile;
 import org.sagebionetworks.repo.model.UserSessionData;
 import org.sagebionetworks.schema.adapter.JSONObjectAdapterException;
 import org.sagebionetworks.schema.adapter.org.json.EntityFactory;
+import org.sagebionetworks.web.shared.Constants;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GetObjectRequest;
@@ -28,7 +29,6 @@ import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
-import com.amazonaws.util.StringInputStream;
 
 /**
  * Unit test for the datastore
@@ -77,7 +77,7 @@ public class UserDataStoreImplTest {
 		String entityId = bundle.getEntity().getId();
 		when(mockSynapse.getEntityBundle(entityId, EntityBundle.ENTITY)).thenReturn(bundle);
 		// Make the call
-		String json = dataStore.getEntityBundleFromSynapse("token", entityId);
+		String json = dataStore.getEntityBundleFromSynapseAsJSON("token", entityId);
 		String expected = EntityFactory.createJSONStringForEntity(bundle);
 		assertEquals(expected, json);
 	}
@@ -112,9 +112,9 @@ public class UserDataStoreImplTest {
 			bundles[i] = createEntityBundle(entityIds[i]);
 		}
 		// This should be the first request
-		ListObjectsRequest requestOne = new ListObjectsRequest().withBucketName(UserDataStoreImpl.DATA_BUCKET).withPrefix(userId).withMarker(null);
+		ListObjectsRequest requestOne = new ListObjectsRequest().withBucketName(Constants.DATA_BUCKET).withPrefix(userId).withMarker(null);
 		ObjectListing resultOne = new ObjectListing();
-		resultOne.setBucketName(UserDataStoreImpl.DATA_BUCKET);
+		resultOne.setBucketName(Constants.DATA_BUCKET);
 		resultOne.setMarker(marker);
 		S3ObjectSummary sum = new S3ObjectSummary();
 		sum.setKey(keys[0]);
@@ -123,9 +123,9 @@ public class UserDataStoreImplTest {
 		sum.setKey(keys[1]);
 		resultOne.getObjectSummaries().add(sum);
 		// This should be the second request
-		ListObjectsRequest requestTwo = new ListObjectsRequest().withBucketName(UserDataStoreImpl.DATA_BUCKET).withPrefix(userId).withMarker(marker);
+		ListObjectsRequest requestTwo = new ListObjectsRequest().withBucketName(Constants.DATA_BUCKET).withPrefix(userId).withMarker(marker);
 		ObjectListing resultTwo = new ObjectListing();
-		resultTwo.setBucketName(UserDataStoreImpl.DATA_BUCKET);
+		resultTwo.setBucketName(Constants.DATA_BUCKET);
 		resultTwo.setMarker(null);
 		sum = new S3ObjectSummary();
 		sum.setKey(keys[2]);
@@ -138,12 +138,12 @@ public class UserDataStoreImplTest {
 		
 		// The next phase is fetching the data
 		for(int i=0; i<keys.length; i++){
-			GetObjectRequest getRequast = new GetObjectRequest(UserDataStoreImpl.DATA_BUCKET, keys[i]);
+			GetObjectRequest getRequast = new GetObjectRequest(Constants.DATA_BUCKET, keys[i]);
 			S3Object result = new S3Object();
 			String json = EntityFactory.createJSONStringForEntity(bundles[i]);
 			ByteArrayInputStream in = new ByteArrayInputStream(json.getBytes("UTF-8"));
 			result.setObjectContent(in);
-			result.setBucketName(UserDataStoreImpl.DATA_BUCKET);
+			result.setBucketName(Constants.DATA_BUCKET);
 			result.setKey(keys[i]);
 			when(mockClient.getObject(argThat(new MatchingGetObjectRequest(getRequast)))).thenReturn(result);
 		}

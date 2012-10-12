@@ -13,7 +13,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sagebionetworks.client.exceptions.SynapseException;
 import org.sagebionetworks.web.client.cookie.SessionManagerImpl;
+import static org.sagebionetworks.web.shared.Constants.*;
 
+import com.amazonaws.services.s3.internal.Constants;
 import com.google.inject.Inject;
 
 /**
@@ -38,25 +40,32 @@ public class EditServlet extends HttpServlet {
 			SessionManagerImpl session = new SessionManagerImpl(new ServeletCookieProvider(request));
 			if(!session.hasSession()) throw new IllegalArgumentException("Can only be called from within an active session");
 			String referer = request.getHeader(HEADER_REFERER);
-			String path = request.getRequestURI().toLowerCase();
-			log.debug("path: "+path);
+			String synapseId = request.getParameter(PARAM_SYNAPSE_ID);
+			if(synapseId == null || "".equals(synapseId.trim())){
+				log.debug("synapseId was null or empty so bouncing back to the caller");
+				// We do not have have what we need to proceed so just go back.
+				response.sendRedirect(referer);
+				return;
+			}
+			String path = request.getRequestURI();
 			if(path.endsWith(PATH_ADD_SUFFIX)){
 				// This is an add
 				doAdd(session, request);
 			}else if(path.endsWith(PATH_SUFFIX_REMOVE)){
 				// This is a remove
 				doRemove(session, request);
-				
 			}else{
-				throw new IllegalArgumentException("Unknown request: "+path);
+				throw new IllegalArgumentException("Unknown path: "+path);
 			}
 			response.sendRedirect(referer);
 		}catch(Throwable e){
-			throw new RuntimeException(e);
+			response.sendError(500, e.getMessage());
+//			throw new RuntimeException(e);
 		}
-
 	}
 	
+
+
 	/**
 	 * This was a remove so remove the entity from the list.
 	 * @param session

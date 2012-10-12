@@ -3,6 +3,7 @@ package org.sagebionetworks.web.server.servlet;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -35,4 +36,7 @@ public class AmazonClientFactoryImpl implements AmazonClientFactory {
 		return new AmazonS3Client(credentials);
 	}
 
+	public AmazonSimpleEmailServiceClient createSESClient(){
+		return new AmazonSimpleEmailServiceClient(credentials);
+	}
 }
