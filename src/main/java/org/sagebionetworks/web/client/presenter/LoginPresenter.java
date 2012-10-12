@@ -53,11 +53,11 @@ public class LoginPresenter extends AbstractActivity implements LoginView.Presen
 	public void start(final AcceptsOneWidget panel, EventBus eventBus) {
 		// First clear any session data
 		sessionManager.clearSession();
+		// Install the view
+		panel.setWidget(view);
 		// Disable the logout button and clear the text
 		view.disableLogOut();
 		
-		// Install the view
-		panel.setWidget(view);
 		// Did the user fail to authenticate?
 		if(Login.TOKEN_AUTH_FAILED.equals(place.getToken())){
 			view.showErrorMessage("Authentication failed");

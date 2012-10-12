@@ -123,10 +123,10 @@ public class MonitorWorkerServelet extends HttpServlet {
 								Thread.sleep(sleepMS);
 							}
 						}catch(SynapseException e){
-							// If we failed to get the entity then notify the user.
+							// We do not tell the user that there was an error rather we send a message to the sender.
 							String subject = createMessageSubject(saved.getId());
 							String body = createMessageBody(user.getProfile().getDisplayName(), saved.getId(), e.getMessage());
-							sendMessage(user.getProfile().getEmail(), subject, body);
+							sendMessage(sendingEmail, subject, body);
 						}
 					}
 				}
