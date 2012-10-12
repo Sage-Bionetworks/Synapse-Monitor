@@ -10,7 +10,7 @@
         <h4>Instructions</h4>
         <p class="box info" ui:field="infoBox" ></p>
         <h4>Add to Watch List</h4>
-        <form class="ym-form" action="monitor/service/add" method="post">
+        <form class="ym-form" action="monitor/service/edit/add" method="post">
             <h6>To add an entity to your watch list paste its synapse id (i.e. 'syn123')</h6>
             <div class="ym-fbox-text">
                 <label for="synapseId">SynapseId<sup class="ym-required" >*</sup></label>

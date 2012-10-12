@@ -21,6 +21,8 @@ import com.google.inject.Inject;
  */
 public class LoginServlet extends HttpServlet {
 
+	private static final long serialVersionUID = 1L;
+	
 	@Inject
 	private SynapseProvider synapseProvide;
 	
@@ -29,9 +31,16 @@ public class LoginServlet extends HttpServlet {
 		
 		// Get the username and password
 		HttpServletRequest req = (HttpServletRequest)rBasic;
-		String username = req.getParameter("username");
 		String referer = req.getHeader("Referer");
+		String username = req.getParameter("username");
 		String password = req.getParameter("password");
+		// Did they pass a username and password.
+		if(username == null | password == null){
+			// Send them back to gather username and password
+			Login place = new Login(Login.TOKEN_NEW);
+			resp.sendRedirect(referer+place.getURL());
+			return;
+		}
 		// Try to authenticate
 		try {
 			UserSessionData data = synapseProvide.createNewSynapse().login(username, password);

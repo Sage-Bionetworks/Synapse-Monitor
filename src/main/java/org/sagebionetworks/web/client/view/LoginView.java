@@ -36,10 +36,13 @@ public interface LoginView extends IsWidget, View  {
 	 */
 	public interface Presenter extends ActivityPresenter<Login> {
 		
-		/**
-		 * Called when the login button is pushed.
-		 */
-		public void login();
 	}
+	
+	/**
+	 * Disable the logout button
+	 */
+	public void disableLogOut();
+
+
 
 }

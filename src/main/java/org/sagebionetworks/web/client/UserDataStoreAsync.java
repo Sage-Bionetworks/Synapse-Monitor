@@ -15,19 +15,37 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface UserDataStoreAsync {
 	
 	/**
-	 * Add an entity to a user's watch list.
-	 * @param userId
-	 * @param toAdd
-	 * @param callback
-	 */
-	void addEntitToUsersWatchList(String userId, EntityData toAdd,
-			AsyncCallback<Void> callback);
-
-	/**
 	 * Get an entity from a user's watch list.
 	 * @param userId
 	 * @param callback
 	 */
-	void getUsersWatchList(String userId, AsyncCallback<List<String>> callback);
+	void getUsersWatchList(String sessionToken, String userId, AsyncCallback<List<EntityData>> callback);
+
+	/**
+	 * Add an entity to the watch list.
+	 * 
+	 * @param sessionToken
+	 * @param userId
+	 * @param entityId
+	 * @param callback
+	 */
+	void addEntitToUsersWatchList(String sessionToken, String userId, String entityId, AsyncCallback<Void> callback);
+
+	/**
+	 * Get the datastore.
+	 * @param token
+	 * @param callback
+	 */
+	void getUserData(String token, AsyncCallback<String> callback);
+
+	/**
+	 * Remove an entity from the watch list.
+	 * @param sessionToken
+	 * @param userId
+	 * @param entityId
+	 * @param callback
+	 */
+	void removeEntityFromWatchList(String sessionToken, String userId,	String entityId, AsyncCallback<Void> callback);
+
 
 }

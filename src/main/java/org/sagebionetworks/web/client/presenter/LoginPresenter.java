@@ -1,13 +1,13 @@
 package org.sagebionetworks.web.client.presenter;
 
 import org.sagebionetworks.repo.model.UserSessionData;
-import org.sagebionetworks.web.client.SynapseClientAsync;
+import org.sagebionetworks.web.client.UserDataStoreAsync;
 import org.sagebionetworks.web.client.cookie.SessionManager;
 import org.sagebionetworks.web.client.place.Login;
 import org.sagebionetworks.web.client.place.UserHome;
 import org.sagebionetworks.web.client.transform.JSONEntityFactory;
-import org.sagebionetworks.web.client.view.WaitView;
 import org.sagebionetworks.web.client.view.LoginView;
+import org.sagebionetworks.web.client.view.WaitView;
 
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
@@ -25,7 +25,7 @@ import com.google.inject.Inject;
 public class LoginPresenter extends AbstractActivity implements LoginView.Presenter {
 	
 	LoginView view;
-	SynapseClientAsync synapseAsynch;
+	UserDataStoreAsync dataStore;
 	SessionManager sessionManager;
 	JSONEntityFactory entityFactory;
 	PlaceController controller;
@@ -33,9 +33,9 @@ public class LoginPresenter extends AbstractActivity implements LoginView.Presen
 	WaitView messageView;
 	
 	@Inject
-	public LoginPresenter(SessionManager sessionManager, SynapseClientAsync synapseAsynch, LoginView view, JSONEntityFactory entityFactory, WaitView messageView){
+	public LoginPresenter(SessionManager sessionManager, UserDataStoreAsync dataStore, LoginView view, JSONEntityFactory entityFactory, WaitView messageView){
 		this.sessionManager = sessionManager;
-		this.synapseAsynch = synapseAsynch;
+		this.dataStore = dataStore;
 		this.view = view;
 		this.entityFactory = entityFactory;
 		this.messageView = messageView;
@@ -53,6 +53,9 @@ public class LoginPresenter extends AbstractActivity implements LoginView.Presen
 	public void start(final AcceptsOneWidget panel, EventBus eventBus) {
 		// First clear any session data
 		sessionManager.clearSession();
+		// Disable the logout button and clear the text
+		view.disableLogOut();
+		
 		// Install the view
 		panel.setWidget(view);
 		// Did the user fail to authenticate?
@@ -64,7 +67,7 @@ public class LoginPresenter extends AbstractActivity implements LoginView.Presen
 			// Try to login with the token that the user provider
 			messageView.setMessage("Logging in to Synapse...");
 			panel.setWidget(messageView);
-			synapseAsynch.getUserData(place.getToken(), new AsyncCallback<String>() {
+			dataStore.getUserData(place.getToken(), new AsyncCallback<String>() {
 				
 				@Override
 				public void onSuccess(String json) {
@@ -85,14 +88,5 @@ public class LoginPresenter extends AbstractActivity implements LoginView.Presen
 			});
 		}
 	}
-	
-
-
-	@Override
-	public void login() {
-
-	}
-
-
 
 }

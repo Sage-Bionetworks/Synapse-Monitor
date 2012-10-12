@@ -3,11 +3,10 @@ package org.sagebionetworks.web.server;
 import java.util.Properties;
 
 import org.sagebionetworks.web.client.UserDataStore;
-import org.sagebionetworks.web.server.servlet.AddServlet;
 import org.sagebionetworks.web.server.servlet.AmazonClientFactory;
 import org.sagebionetworks.web.server.servlet.AmazonClientFactoryImpl;
+import org.sagebionetworks.web.server.servlet.EditServlet;
 import org.sagebionetworks.web.server.servlet.LoginServlet;
-import org.sagebionetworks.web.server.servlet.SynapseClientImpl;
 import org.sagebionetworks.web.server.servlet.SynapseProvider;
 import org.sagebionetworks.web.server.servlet.SynapseProviderImpl;
 import org.sagebionetworks.web.server.servlet.UserDataStoreImpl;
@@ -33,10 +32,6 @@ public class MonitorServletModule extends ServletModule {
 		filter("/monitor/*").through(TimingFilter.class);
 		bind(TimingFilter.class).in(Singleton.class);
 		
-		// Setup the Search service
-		bind(SynapseClientImpl.class).in(Singleton.class);
-		serve("/monitor/synapse").with(SynapseClientImpl.class);
-		
 		// Storage of user data.
 		bind(UserDataStoreImpl.class).in(Singleton.class);
 		serve("/monitor/datastore").with(UserDataStoreImpl.class);
@@ -58,8 +53,9 @@ public class MonitorServletModule extends ServletModule {
 		serve("/monitor/service/login").with(LoginServlet.class);
 		
 		// Add
-		bind(AddServlet.class).in(Singleton.class);
-		serve("/monitor/service/add").with(AddServlet.class);
+		bind(EditServlet.class).in(Singleton.class);
+		serve("/monitor/service/edit/*").with(EditServlet.class);
+		
 		
 		// Bind the environment variables
 		Properties props = new Properties();

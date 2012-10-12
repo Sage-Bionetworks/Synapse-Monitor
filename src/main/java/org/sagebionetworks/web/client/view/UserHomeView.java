@@ -31,6 +31,18 @@ public interface UserHomeView extends IsWidget, View  {
 	 */
 	public void addRowToList(String[] row);
 	
+	/**
+	 * Set the table headers.
+	 * @param headers
+	 */
+	public void setTableHeaders(String[] headers);
+	
+	/**
+	 * This should enable the logout button 
+	 * @param userDisplayName
+	 */
+	public void setUserDisplayName(String userDisplayName);
+	
 	
 	/**
 	 * The presenter contract.

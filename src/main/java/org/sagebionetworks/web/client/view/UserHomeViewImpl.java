@@ -1,9 +1,8 @@
 package org.sagebionetworks.web.client.view;
 
-import java.util.List;
+import org.sagebionetworks.web.shared.Constants;
 
 import com.google.gwt.dom.client.Node;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.ParagraphElement;
 import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.dom.client.TableRowElement;
@@ -18,7 +17,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 public class UserHomeViewImpl extends Composite implements UserHomeView {
-	
+		
 	Presenter presenter;
 	String username;
 	String email;
@@ -30,32 +29,17 @@ public class UserHomeViewImpl extends Composite implements UserHomeView {
 	TableSectionElement tableHead;
 	@UiField
 	TableSectionElement tableBody;
+	Element titleBarLable;
+	Element logOutButton;
 
 	public interface  UserHomeViewImplUiBinder extends UiBinder<Widget,  UserHomeViewImpl> {}
 	
 	@Inject
 	public  UserHomeViewImpl(UserHomeViewImplUiBinder binder){
 		initWidget(binder.createAndBindUi(this));
-		
-		String[] columns = new String[]{
-				"SynpaseId",
-				"Name",
-				"Description",
-				"Cows",
-		};
-		// Set the table headers
-		setTableHeaders(columns);
-//		// Fill in the table with data.
-//		for(int row=0; row<25; row++){
-//			TableRowElement tr = TableRowElement.as(DOM.createTR());
-//			for(int col=0; col<columns.length; col++){
-//				Element td = DOM.createTD();
-//				// set the text
-//				DOM.setInnerText(td, "row:"+row+"col:"+col);
-//				tr.appendChild(td);
-//			}
-//			tableBody.appendChild(tr);
-//		}
+		// register as a listener to the form submit
+		titleBarLable = DOM.getElementById(Constants.ELE_ID_USER_NAME_TITLE_BAR);
+		logOutButton = DOM.getElementById(Constants.ELE_ID_LOGOUT_BUTTON);
 	}
 
 	/**
@@ -90,7 +74,7 @@ public class UserHomeViewImpl extends Composite implements UserHomeView {
 	public void setUserInfo(String username, String email) {
 		this.username = username;
 		this.email = email;
-		infoBox.setInnerText("Welcome '"+username+"' the following is the list of entites you are currently watching.  When any of these entites change you will be notified by email at: "+email);
+		infoBox.setInnerHTML("The following is the list of entities you are currently watching. When any of these entities change you will be notified by email at: <b><em>"+email+"</em></b>");
 	}
 
 	@Override
@@ -108,10 +92,18 @@ public class UserHomeViewImpl extends Composite implements UserHomeView {
 		for(int col=0; col<row.length; col++){
 			Element td = DOM.createTD();
 			// set the text
-			DOM.setInnerText(td, row[col]);
+			DOM.setInnerHTML(td, row[col]);
 			tr.appendChild(td);
 		}
 		tableBody.appendChild(tr);
+	}
+	
+	@Override
+	public void setUserDisplayName(String userDisplayName) {
+		// Set the user in the Title bar
+		DOM.setInnerText(titleBarLable, "Welcome, "+userDisplayName);
+		// enable the logout button
+		DOM.setElementAttribute(logOutButton, "type", "submit");
 	}
 
 }
