@@ -1,0 +1,2 @@
+serviceClass: org.sagebionetworks.web.client.GreetingService
+path: A75E43072A3930EBEDD16963CB1DB699.gwt.rpc

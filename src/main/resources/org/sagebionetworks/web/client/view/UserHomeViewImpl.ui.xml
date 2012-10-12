@@ -1,0 +1,30 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+    xmlns:g="urn:import:com.google.gwt.user.client.ui" >
+
+    <ui:style>
+    </ui:style>
+
+    <g:HTMLPanel>
+
+        <h4>Instructions</h4>
+        <p class="box info" ui:field="infoBox" ></p>
+        <h4>Add to Watch List</h4>
+        <form class="ym-form" action="monitor/service/edit/add" method="post">
+            <h6>To add an entity to your watch list paste its synapse id (i.e. 'syn123')</h6>
+            <div class="ym-fbox-text">
+                <label for="synapseId">SynapseId<sup class="ym-required" >*</sup></label>
+                <input type="text" name="synapseId" id="synapseId" size="20" />
+                <button type="submit" class="ym-button ym-add" value="submit" name="Add" >Add</button>
+            </div>
+        </form>
+        <h4>Current Watch List</h4>
+        <table class="bordertable" ui:field="table" >
+            <!-- This gets filled in by the view -->
+            <thead ui:field="tableHead"></thead>
+            <!-- This gets filled in by the view -->
+            <tbody ui:field="tableBody"></tbody>
+        </table>
+    </g:HTMLPanel>
+
+</ui:UiBinder>
