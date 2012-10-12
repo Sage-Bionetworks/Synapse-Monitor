@@ -38,6 +38,8 @@ import com.google.inject.Inject;
  */
 public class MonitorWorkerServelet extends HttpServlet {
 	
+	private static final long serialVersionUID = 1L;
+
 	static private Log log = LogFactory.getLog(MonitorWorkerServelet.class);
 	
 	UserDataStoreImpl dataStore;
@@ -160,9 +162,9 @@ public class MonitorWorkerServelet extends HttpServlet {
 		builder.append("Dear ");
 		builder.append(userName);
 		builder.append(",<br><br>");
-		builder.append("The <a href=\"https://synapse-monitor.sagebase.org\">Synapse Monitor Service</a> is sending this message because the following was detected: <br> ");
+		builder.append("The <a href=\"https://synapse-monitor.sagebase.org\">Synapse Monitor Service</a> is sending this message because the following was detected:<br><br>");
 		builder.append(message);
-		builder.append("<br>");
+		builder.append("<br><br>");
 		builder.append("Click the following link to see the Entity in Synapse: <a href=\"https://synapse.sagebase.org/#Synapse:");
 		builder.append(entityId);
 		builder.append("\">");
