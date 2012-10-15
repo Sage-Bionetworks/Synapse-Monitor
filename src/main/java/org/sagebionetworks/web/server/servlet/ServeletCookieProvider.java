@@ -2,6 +2,7 @@ package org.sagebionetworks.web.server.servlet;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
@@ -9,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.sagebionetworks.web.client.cookie.CookieProvider;
 
-import com.google.gwt.dev.util.collect.HashMap;
 /**
  * Wraps the servlet side of the cookie provider.
  * @author John

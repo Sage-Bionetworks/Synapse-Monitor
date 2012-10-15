@@ -380,7 +380,23 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 			</plugin>
-
+			<!-- This allows use to run the servlet container from maven via mvn tomcat:run
+				or deploy to a local tomcat via tomcat:deploy -->
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.0</version>
+				<configuration>
+					<!-- Deploy this as the root application -->
+					<path>/</path>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<argLine>-Xmx1024m -Xms128m</argLine>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
   	<distributionManagement>
