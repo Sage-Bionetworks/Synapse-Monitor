@@ -15,7 +15,7 @@ import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sagebionetworks.client.Synapse;
+import org.sagebionetworks.client.SynapseClient;
 import org.sagebionetworks.client.exceptions.SynapseException;
 import org.sagebionetworks.repo.model.EntityBundle;
 import org.sagebionetworks.repo.model.UserSessionData;
@@ -37,6 +37,7 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
+import org.sagebionetworks.repo.model.auth.Session;
 
 /**
  * The S3 implementation of the datastore.
@@ -179,7 +180,7 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 	 */
 	public EntityBundle getEntityBundleFromSynapse(String sessionToken,
 			String entityId) throws SynapseException {
-		Synapse synapse = synapseProvider.createNewSynapse();
+		SynapseClient synapse = synapseProvider.createNewSynapse();
 		synapse.setSessionToken(sessionToken);
 		// Get the bundle
 		EntityBundle bundle = synapse.getEntityBundle(entityId, EntityBundle.ENTITY);
@@ -189,7 +190,7 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 	@Override
 	public List<EntityData> getUsersWatchList(String sessionToken, String userId) throws SynapseException{
 		if(userId == null) throw new IllegalArgumentException("UserId cannot be null");
-		Synapse synapse = synapseProvider.createNewSynapse();
+		SynapseClient synapse = synapseProvider.createNewSynapse();
 		synapse.setSessionToken(sessionToken);
 		synapse.revalidateSession();
 		// List the Entity ids
@@ -225,7 +226,7 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 		if(userId == null) throw new IllegalArgumentException("userId cannot be null");
 		if(entityId == null) throw new IllegalArgumentException("entityId cannot be null");
 		// Validate the user.
-		Synapse synapse = synapseProvider.createNewSynapse();
+		SynapseClient synapse = synapseProvider.createNewSynapse();
 		synapse.setSessionToken(sessionToken);
 		synapse.revalidateSession();
 		// Remove the file if it exist
@@ -254,7 +255,7 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 	 */
 	@Override
 	public String getUserData(String token) throws SynapseException {
-		Synapse synapse = synapseProvider.createNewSynapse();
+		SynapseClient synapse = synapseProvider.createNewSynapse();
 		synapse.setSessionToken(token);
 		UserSessionData usd = synapse.getUserSessionData();
 		try {
@@ -273,9 +274,10 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 	 * @throws SynapseException
 	 */
 	public UserSessionData login(String username, String password) throws SynapseException{
-		Synapse synapse = synapseProvider.createNewSynapse();
+		SynapseClient synapse = synapseProvider.createNewSynapse();
 		// Login the user.
-		UserSessionData usd = synapse.login(username, password);
+		Session s  = synapse.login(username, password);
+		UserSessionData usd = synapse.getUserSessionData();
 		// Save the user's data
 		// This data is used by the worker.
 		String key = createUserDataKey(usd.getProfile().getOwnerId());

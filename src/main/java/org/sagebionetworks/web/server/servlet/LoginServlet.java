@@ -14,6 +14,7 @@ import org.sagebionetworks.repo.model.UserSessionData;
 import org.sagebionetworks.web.client.place.Login;
 
 import com.google.inject.Inject;
+import org.sagebionetworks.repo.model.auth.Session;
 
 /**
  * Login the user to Synapse and save their session information.
@@ -50,7 +51,7 @@ public class LoginServlet extends HttpServlet {
 			log.debug("Authenticating user: "+username+"...");
 			UserSessionData data = userDataStore.login(username, password);
 			// Login the user using the token
-			Login place = new Login(data.getSessionToken());
+			Login place = new Login(data.getSession().getSessionToken());
 			resp.sendRedirect(referer+place.getURL());
 			return;
 		} catch (SynapseException e) {

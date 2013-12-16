@@ -43,11 +43,11 @@ public class SessionManagerImpl implements SessionManager {
 		if(data.getProfile().getDisplayName() == null) throw new IllegalArgumentException("Dispaly name cannot be null");
 		if(data.getProfile().getEmail() == null) throw new IllegalArgumentException("Email canot be null");
 		if(data.getProfile().getOwnerId() == null) throw new IllegalArgumentException("OwnerId canot be null");
-		if(data.getSessionToken() == null) throw new IllegalArgumentException("Session token cannot be null");
+		if(data.getSession().getSessionToken() == null) throw new IllegalArgumentException("Session token cannot be null");
 		// Store the data in the cookies
 		cookieProvider.setCookie(KEY_USER_DISPLAY_NAME, data.getProfile().getDisplayName());
 		cookieProvider.setCookie(KEY_USER_EMAIL, data.getProfile().getEmail());
-		cookieProvider.setCookie(KEY_USER_SESSION_TOKEN, data.getSessionToken());
+		cookieProvider.setCookie(KEY_USER_SESSION_TOKEN, data.getSession().getSessionToken());
 		cookieProvider.setCookie(KEY_USER_ID, data.getProfile().getOwnerId());
 		
 	}
