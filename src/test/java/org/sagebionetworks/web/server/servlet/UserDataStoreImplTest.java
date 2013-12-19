@@ -13,7 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
-import org.sagebionetworks.client.Synapse;
+import org.sagebionetworks.client.SynapseClient;
 import org.sagebionetworks.client.exceptions.SynapseException;
 import org.sagebionetworks.repo.model.EntityBundle;
 import org.sagebionetworks.repo.model.Project;
@@ -29,6 +29,7 @@ import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
+import org.sagebionetworks.repo.model.auth.Session;
 
 /**
  * Unit test for the datastore
@@ -40,7 +41,7 @@ public class UserDataStoreImplTest {
 	AmazonS3Client mockClient;
 	AmazonClientFactory mockFactory;
 	SynapseProvider mockProvider;
-	Synapse mockSynapse;
+	SynapseClient mockSynapse;
 	UserDataStoreImpl dataStore;
 	
 	@Before
@@ -49,7 +50,7 @@ public class UserDataStoreImplTest {
 		mockFactory = Mockito.mock(AmazonClientFactory.class);
 		mockClient = Mockito.mock(AmazonS3Client.class);
 		mockProvider = Mockito.mock(SynapseProvider.class);
-		mockSynapse = Mockito.mock(Synapse.class);
+		mockSynapse = Mockito.mock(SynapseClient.class);
 		when(mockFactory.createS3Client()).thenReturn(mockClient);
 		when(mockProvider.createNewSynapse()).thenReturn(mockSynapse);
 		dataStore = new UserDataStoreImpl(mockFactory, mockProvider);
@@ -86,7 +87,7 @@ public class UserDataStoreImplTest {
 	public void testGetUserData() throws SynapseException, JSONObjectAdapterException{
 		UserSessionData usd = createUserData();
 		String token = "token123";
-		usd.setSessionToken(token);
+		usd.getSession().setSessionToken(token);
 		when(mockSynapse.getUserSessionData()).thenReturn(usd);
 		String expected = EntityFactory.createJSONStringForEntity(usd);
 		String result = dataStore.getUserData(token);
@@ -210,6 +211,8 @@ public class UserDataStoreImplTest {
 	 */
 	public UserSessionData createUserData() {
 		UserSessionData usd = new UserSessionData();
+		Session s = new Session();
+		usd.setSession(s);
 		usd.setProfile(new UserProfile());
 		usd.getProfile().setDisplayName("display");
 		usd.getProfile().setEmail("email");

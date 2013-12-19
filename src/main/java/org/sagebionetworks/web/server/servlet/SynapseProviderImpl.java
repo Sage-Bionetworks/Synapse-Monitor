@@ -1,6 +1,6 @@
 package org.sagebionetworks.web.server.servlet;
 
-import org.sagebionetworks.client.Synapse;
+import org.sagebionetworks.client.SynapseClientImpl;
 
 /**
  * A very simple synapse Provider.
@@ -10,8 +10,8 @@ import org.sagebionetworks.client.Synapse;
 public class SynapseProviderImpl implements SynapseProvider {
 
 	@Override
-	public Synapse createNewSynapse() {
-		return new Synapse();
+	public SynapseClientImpl createNewSynapse() {
+		return new SynapseClientImpl();
 	}
 
 }
