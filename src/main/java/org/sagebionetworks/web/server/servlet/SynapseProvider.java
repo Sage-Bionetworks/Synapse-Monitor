@@ -1,6 +1,6 @@
 package org.sagebionetworks.web.server.servlet;
 
-import org.sagebionetworks.client.Synapse;
+import org.sagebionetworks.client.SynapseClient;
 
 /**
  * Abstraction for creating a Synapse object.
@@ -13,6 +13,6 @@ public interface SynapseProvider {
 	 * Create a new Syanpse object
 	 * @return
 	 */
-	public Synapse createNewSynapse();
+	public SynapseClient createNewSynapse();
 
 }

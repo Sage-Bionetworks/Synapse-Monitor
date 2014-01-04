@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServlet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sagebionetworks.client.Synapse;
+import org.sagebionetworks.client.SynapseClient;
 import org.sagebionetworks.client.exceptions.SynapseException;
 import org.sagebionetworks.repo.model.Entity;
 import org.sagebionetworks.repo.model.EntityBundle;
@@ -96,8 +96,8 @@ public class MonitorWorkerServelet extends HttpServlet {
 			// First get all of the users
 			try {
 				// Make sure we have a fresh synapse connection
-				Synapse client = synapseProvider.createNewSynapse();
-				client.login(adminUsername, adminPassword, true);
+				SynapseClient client = synapseProvider.createNewSynapse();
+				client.login(adminUsername, adminPassword);
 				
 				List<UserSessionData> userList = dataStore.readEntityListFromS3(FOLDER_USERS, UserSessionData.class);
 				// for each user look up the entities they are watching

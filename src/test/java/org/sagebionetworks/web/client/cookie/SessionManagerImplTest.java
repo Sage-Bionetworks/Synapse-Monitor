@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.sagebionetworks.repo.model.UserProfile;
 import org.sagebionetworks.repo.model.UserSessionData;
+import org.sagebionetworks.repo.model.auth.Session;
 
 /**
  * Unit test for the SessionManagerImpl
@@ -19,16 +20,19 @@ public class SessionManagerImplTest {
 	CookieProvider mockProvider;
 	SessionManagerImpl manager;
 	UserSessionData data;
+	Session s;
 	
 	@Before
 	public void before(){
 		mockProvider = new StubCookieProvider();
 		manager = new SessionManagerImpl(mockProvider);
 		data = new UserSessionData();
+		s = new Session();
+		data.setSession(s);
 		data.setProfile(new UserProfile());
 		data.getProfile().setDisplayName("display");
 		data.getProfile().setEmail("email");
-		data.setSessionToken("token");
+		data.getSession().setSessionToken("token");
 		data.getProfile().setOwnerId("123");
 	}
 	
@@ -56,7 +60,7 @@ public class SessionManagerImplTest {
 	}
 	@Test (expected=IllegalArgumentException.class)
 	public void testSaveSessionNullProfileSessionToken(){
-		data.setSessionToken(null);
+		data.getSession().setSessionToken(null);
 		manager.saveSession(data);
 	}
 	
@@ -68,7 +72,7 @@ public class SessionManagerImplTest {
 		assertEquals(data.getProfile().getDisplayName(), manager.getUserDisplayName());
 		assertEquals(data.getProfile().getEmail(), manager.getUserEmail());
 		assertEquals(data.getProfile().getOwnerId(), manager.getUserPrincipalId());
-		assertEquals(data.getSessionToken(), manager.getSessionToken());
+		assertEquals(data.getSession().getSessionToken(), manager.getSessionToken());
 		// clear the data
 		manager.clearSession();
 		assertFalse(manager.hasSession());
