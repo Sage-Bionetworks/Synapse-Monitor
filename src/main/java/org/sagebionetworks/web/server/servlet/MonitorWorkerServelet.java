@@ -11,8 +11,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServlet;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.sagebionetworks.client.SynapseClient;
 import org.sagebionetworks.client.exceptions.SynapseException;
 import org.sagebionetworks.repo.model.Entity;
@@ -40,7 +40,7 @@ public class MonitorWorkerServelet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 
-	static private Log log = LogFactory.getLog(MonitorWorkerServelet.class);
+	static private Logger log = LogManager.getLogger(MonitorWorkerServelet.class.getName());
 	
 	UserDataStoreImpl dataStore;
 	SynapseProvider synapseProvider;

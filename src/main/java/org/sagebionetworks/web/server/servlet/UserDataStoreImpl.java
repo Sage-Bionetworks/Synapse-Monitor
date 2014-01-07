@@ -13,8 +13,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.sagebionetworks.client.SynapseClient;
 import org.sagebionetworks.client.exceptions.SynapseException;
 import org.sagebionetworks.repo.model.EntityBundle;
@@ -47,7 +47,7 @@ import org.sagebionetworks.repo.model.auth.Session;
  */
 public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataStore {
 	
-	static private Log log = LogFactory.getLog(UserDataStoreImpl.class);
+	static private Logger log = LogManager.getLogger(UserDataStoreImpl.class.getName());
 
 	private static final long serialVersionUID = 1L;
 	
@@ -115,10 +115,13 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 	public <T extends JSONEntity> T readEtntiyFromS3(String key, Class<? extends T> clazz) throws SynapseException {
 		// Get the file
 		S3Object object = client.getObject(new GetObjectRequest(DATA_BUCKET, key));
+		log.debug(String.format("readEntityFromS3: object(%s, %s)", object.getBucketName(), object.getKey()));
 		// Read the data
 		try {
 			String json = DataUtils.readStringFromStream(object.getObjectContent());
-			return EntityFactory.createEntityFromJSONString(json, clazz);
+//			log.debug("readEntityFromS3: ('" + key + "','" + json + "')");
+			T entity = EntityFactory.createEntityFromJSONString(json, clazz);
+			return entity;
 		} catch (IOException e) {
 			throw new SynapseException(e);
 		} catch (JSONObjectAdapterException e) {
@@ -134,6 +137,7 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 	 */
 	public <T extends JSONEntity> List<T> readEntityListFromS3(String prefix, Class<? extends T> clazz) throws SynapseException{
 		if(prefix == null) throw new IllegalArgumentException("Prefix cannot be null");
+//		log.debug("readEntityListFromS3: prefix " + prefix);
 		// List the Entity ids
 		List<T> list = new LinkedList<T>();;
 		String marker = null;
@@ -142,6 +146,7 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 			ObjectListing listing = client.listObjects(new ListObjectsRequest().withBucketName(DATA_BUCKET).withPrefix(prefix).withMarker(marker));
 			marker = listing.getMarker();
 			List<S3ObjectSummary> sums = listing.getObjectSummaries();
+			log.debug("readEntityListFromS3: found " + sums.size() + " object summaries");
 			for(S3ObjectSummary sum: sums){
 				// Load each file
 				T object = readEtntiyFromS3(sum.getKey(), clazz);
