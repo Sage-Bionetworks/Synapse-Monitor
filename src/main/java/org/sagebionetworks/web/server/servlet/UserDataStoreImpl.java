@@ -16,7 +16,7 @@ import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.sagebionetworks.client.SynapseClient;
-import org.sagebionetworks.client.exceptions.SynapseException;
+import org.sagebionetworks.client.exceptions.SynapseClientException;
 import org.sagebionetworks.repo.model.EntityBundle;
 import org.sagebionetworks.repo.model.UserSessionData;
 import org.sagebionetworks.schema.adapter.JSONEntity;
@@ -37,6 +37,8 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
+import org.sagebionetworks.client.SynapseClientImpl;
+import org.sagebionetworks.client.exceptions.SynapseException;
 import org.sagebionetworks.repo.model.auth.Session;
 
 /**
@@ -65,7 +67,7 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 	}
 
 	@Override
-	public void addEntitToUsersWatchList(String sessionToken, String userId, String entityId) throws SynapseException {
+	public void addEntitToUsersWatchList(String sessionToken, String userId, String entityId) throws SynapseClientException, SynapseException {
 		if(userId == null) throw new IllegalArgumentException("UserId cannot be null");
 		if(entityId == null) throw new IllegalArgumentException("EntityData cannot be null");
 		if(sessionToken == null) throw new IllegalArgumentException("Session token cannot be null");
@@ -112,7 +114,7 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 	 * @return
 	 * @throws SynapseException
 	 */
-	public <T extends JSONEntity> T readEtntiyFromS3(String key, Class<? extends T> clazz) throws SynapseException {
+	public <T extends JSONEntity> T readEtntiyFromS3(String key, Class<? extends T> clazz) throws SynapseClientException {
 		// Get the file
 		S3Object object = client.getObject(new GetObjectRequest(DATA_BUCKET, key));
 		log.debug(String.format("readEntityFromS3: object(%s, %s)", object.getBucketName(), object.getKey()));
@@ -123,9 +125,9 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 			T entity = EntityFactory.createEntityFromJSONString(json, clazz);
 			return entity;
 		} catch (IOException e) {
-			throw new SynapseException(e);
+			throw new SynapseClientException(e);
 		} catch (JSONObjectAdapterException e) {
-			throw new SynapseException(e);
+			throw new SynapseClientException(e);
 		}
 	}
 	
@@ -135,7 +137,7 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 	 * @return
 	 * @throws SynapseException
 	 */
-	public <T extends JSONEntity> List<T> readEntityListFromS3(String prefix, Class<? extends T> clazz) throws SynapseException{
+	public <T extends JSONEntity> List<T> readEntityListFromS3(String prefix, Class<? extends T> clazz) throws SynapseClientException{
 		if(prefix == null) throw new IllegalArgumentException("Prefix cannot be null");
 //		log.debug("readEntityListFromS3: prefix " + prefix);
 		// List the Entity ids
@@ -166,13 +168,13 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 	 * @throws SynapseException
 	 */
 	public String getEntityBundleFromSynapseAsJSON(String sessionToken,
-			String entityId) throws SynapseException {
+			String entityId) throws SynapseClientException, SynapseException {
 		EntityBundle bundle = getEntityBundleFromSynapse(sessionToken, entityId);
 		String bundleJSON;
 		try {
 			bundleJSON = EntityFactory.createJSONStringForEntity(bundle);
 		} catch (JSONObjectAdapterException e2) {
-			throw new SynapseException(e2);
+			throw new SynapseClientException(e2);
 		}
 		return bundleJSON;
 	}
@@ -184,7 +186,7 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 	 * @throws SynapseException
 	 */
 	public EntityBundle getEntityBundleFromSynapse(String sessionToken,
-			String entityId) throws SynapseException {
+			String entityId) throws SynapseClientException, SynapseException {
 		SynapseClient synapse = synapseProvider.createNewSynapse();
 		synapse.setSessionToken(sessionToken);
 		// Get the bundle
@@ -193,7 +195,7 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 	}
 
 	@Override
-	public List<EntityData> getUsersWatchList(String sessionToken, String userId) throws SynapseException{
+	public List<EntityData> getUsersWatchList(String sessionToken, String userId) throws SynapseClientException, SynapseException{
 		if(userId == null) throw new IllegalArgumentException("UserId cannot be null");
 		SynapseClient synapse = synapseProvider.createNewSynapse();
 		synapse.setSessionToken(sessionToken);
@@ -218,7 +220,7 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 	 * @return
 	 * @throws SynapseException
 	 */
-	public List<EntityBundle> getUsersWatchListAsEntity(String userId) throws SynapseException{
+	public List<EntityBundle> getUsersWatchListAsEntity(String userId) throws SynapseClientException{
 		if(userId == null) throw new IllegalArgumentException("UserId cannot be null");
 		// Read all of the data for this user.
 		return readEntityListFromS3(userId, EntityBundle.class);
@@ -226,7 +228,7 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 	
 	
 	@Override
-	public void removeEntityFromWatchList(String sessionToken, String userId, String entityId) throws SynapseException {
+	public void removeEntityFromWatchList(String sessionToken, String userId, String entityId) throws SynapseClientException, SynapseException {
 		if(sessionToken == null) throw new IllegalArgumentException("sessionToken cannot be null");
 		if(userId == null) throw new IllegalArgumentException("userId cannot be null");
 		if(entityId == null) throw new IllegalArgumentException("entityId cannot be null");
@@ -259,7 +261,7 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 	 * Get the user data for a token
 	 */
 	@Override
-	public String getUserData(String token) throws SynapseException {
+	public String getUserData(String token) throws SynapseClientException, SynapseException {
 		SynapseClient synapse = synapseProvider.createNewSynapse();
 		synapse.setSessionToken(token);
 		UserSessionData usd = synapse.getUserSessionData();
@@ -267,7 +269,7 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 			// Convert it to a string.
 			return EntityFactory.createJSONStringForEntity(usd);
 		} catch (JSONObjectAdapterException e) {
-			throw new SynapseException(e);
+			throw new SynapseClientException(e);
 		}
 	}
 	
@@ -278,7 +280,7 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 	 * @return
 	 * @throws SynapseException
 	 */
-	public UserSessionData login(String username, String password) throws SynapseException{
+	public UserSessionData login(String username, String password) throws SynapseClientException, SynapseException{
 		SynapseClient synapse = synapseProvider.createNewSynapse();
 		// Login the user.
 		Session s  = synapse.login(username, password);
