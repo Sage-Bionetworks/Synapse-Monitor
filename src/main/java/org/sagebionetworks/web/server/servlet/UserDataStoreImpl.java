@@ -67,7 +67,7 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 	}
 
 	@Override
-	public void addEntitToUsersWatchList(String sessionToken, String userId, String entityId) throws SynapseClientException, SynapseException {
+	public void addEntitToUsersWatchList(String sessionToken, String userId, String entityId) throws SynapseException {
 		if(userId == null) throw new IllegalArgumentException("UserId cannot be null");
 		if(entityId == null) throw new IllegalArgumentException("EntityData cannot be null");
 		if(sessionToken == null) throw new IllegalArgumentException("Session token cannot be null");
@@ -186,7 +186,7 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 	 * @throws SynapseException
 	 */
 	public EntityBundle getEntityBundleFromSynapse(String sessionToken,
-			String entityId) throws SynapseClientException, SynapseException {
+			String entityId) throws SynapseException {
 		SynapseClient synapse = synapseProvider.createNewSynapse();
 		synapse.setSessionToken(sessionToken);
 		// Get the bundle
@@ -195,7 +195,7 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 	}
 
 	@Override
-	public List<EntityData> getUsersWatchList(String sessionToken, String userId) throws SynapseClientException, SynapseException{
+	public List<EntityData> getUsersWatchList(String sessionToken, String userId) throws SynapseException{
 		if(userId == null) throw new IllegalArgumentException("UserId cannot be null");
 		SynapseClient synapse = synapseProvider.createNewSynapse();
 		synapse.setSessionToken(sessionToken);
@@ -228,7 +228,7 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 	
 	
 	@Override
-	public void removeEntityFromWatchList(String sessionToken, String userId, String entityId) throws SynapseClientException, SynapseException {
+	public void removeEntityFromWatchList(String sessionToken, String userId, String entityId) throws SynapseException {
 		if(sessionToken == null) throw new IllegalArgumentException("sessionToken cannot be null");
 		if(userId == null) throw new IllegalArgumentException("userId cannot be null");
 		if(entityId == null) throw new IllegalArgumentException("entityId cannot be null");
@@ -280,7 +280,7 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 	 * @return
 	 * @throws SynapseException
 	 */
-	public UserSessionData login(String username, String password) throws SynapseClientException, SynapseException{
+	public UserSessionData login(String username, String password) throws SynapseException{
 		SynapseClient synapse = synapseProvider.createNewSynapse();
 		// Login the user.
 		Session s  = synapse.login(username, password);
