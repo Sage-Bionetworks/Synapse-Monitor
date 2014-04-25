@@ -13,10 +13,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.sagebionetworks.client.SynapseClient;
-import org.sagebionetworks.client.exceptions.SynapseException;
+import org.sagebionetworks.client.exceptions.SynapseClientException;
 import org.sagebionetworks.repo.model.EntityBundle;
 import org.sagebionetworks.repo.model.UserSessionData;
 import org.sagebionetworks.schema.adapter.JSONEntity;
@@ -37,6 +37,8 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
+import org.sagebionetworks.client.SynapseClientImpl;
+import org.sagebionetworks.client.exceptions.SynapseException;
 import org.sagebionetworks.repo.model.auth.Session;
 
 /**
@@ -47,7 +49,7 @@ import org.sagebionetworks.repo.model.auth.Session;
  */
 public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataStore {
 	
-	static private Log log = LogFactory.getLog(UserDataStoreImpl.class);
+	static private Logger log = LogManager.getLogger(UserDataStoreImpl.class.getName());
 
 	private static final long serialVersionUID = 1L;
 	
@@ -112,17 +114,20 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 	 * @return
 	 * @throws SynapseException
 	 */
-	public <T extends JSONEntity> T readEtntiyFromS3(String key, Class<? extends T> clazz) throws SynapseException {
+	public <T extends JSONEntity> T readEtntiyFromS3(String key, Class<? extends T> clazz) throws SynapseClientException {
 		// Get the file
 		S3Object object = client.getObject(new GetObjectRequest(DATA_BUCKET, key));
+		log.debug(String.format("readEntityFromS3: object(%s, %s)", object.getBucketName(), object.getKey()));
 		// Read the data
 		try {
 			String json = DataUtils.readStringFromStream(object.getObjectContent());
-			return EntityFactory.createEntityFromJSONString(json, clazz);
+//			log.debug("readEntityFromS3: ('" + key + "','" + json + "')");
+			T entity = EntityFactory.createEntityFromJSONString(json, clazz);
+			return entity;
 		} catch (IOException e) {
-			throw new SynapseException(e);
+			throw new SynapseClientException(e);
 		} catch (JSONObjectAdapterException e) {
-			throw new SynapseException(e);
+			throw new SynapseClientException(e);
 		}
 	}
 	
@@ -132,8 +137,9 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 	 * @return
 	 * @throws SynapseException
 	 */
-	public <T extends JSONEntity> List<T> readEntityListFromS3(String prefix, Class<? extends T> clazz) throws SynapseException{
+	public <T extends JSONEntity> List<T> readEntityListFromS3(String prefix, Class<? extends T> clazz) throws SynapseClientException{
 		if(prefix == null) throw new IllegalArgumentException("Prefix cannot be null");
+//		log.debug("readEntityListFromS3: prefix " + prefix);
 		// List the Entity ids
 		List<T> list = new LinkedList<T>();;
 		String marker = null;
@@ -142,6 +148,7 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 			ObjectListing listing = client.listObjects(new ListObjectsRequest().withBucketName(DATA_BUCKET).withPrefix(prefix).withMarker(marker));
 			marker = listing.getMarker();
 			List<S3ObjectSummary> sums = listing.getObjectSummaries();
+			log.debug("readEntityListFromS3: found " + sums.size() + " object summaries");
 			for(S3ObjectSummary sum: sums){
 				// Load each file
 				T object = readEtntiyFromS3(sum.getKey(), clazz);
@@ -161,13 +168,13 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 	 * @throws SynapseException
 	 */
 	public String getEntityBundleFromSynapseAsJSON(String sessionToken,
-			String entityId) throws SynapseException {
+			String entityId) throws SynapseClientException, SynapseException {
 		EntityBundle bundle = getEntityBundleFromSynapse(sessionToken, entityId);
 		String bundleJSON;
 		try {
 			bundleJSON = EntityFactory.createJSONStringForEntity(bundle);
 		} catch (JSONObjectAdapterException e2) {
-			throw new SynapseException(e2);
+			throw new SynapseClientException(e2);
 		}
 		return bundleJSON;
 	}
@@ -213,7 +220,7 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 	 * @return
 	 * @throws SynapseException
 	 */
-	public List<EntityBundle> getUsersWatchListAsEntity(String userId) throws SynapseException{
+	public List<EntityBundle> getUsersWatchListAsEntity(String userId) throws SynapseClientException{
 		if(userId == null) throw new IllegalArgumentException("UserId cannot be null");
 		// Read all of the data for this user.
 		return readEntityListFromS3(userId, EntityBundle.class);
@@ -254,7 +261,7 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 	 * Get the user data for a token
 	 */
 	@Override
-	public String getUserData(String token) throws SynapseException {
+	public String getUserData(String token) throws SynapseClientException, SynapseException {
 		SynapseClient synapse = synapseProvider.createNewSynapse();
 		synapse.setSessionToken(token);
 		UserSessionData usd = synapse.getUserSessionData();
@@ -262,7 +269,7 @@ public class UserDataStoreImpl extends RemoteServiceServlet implements UserDataS
 			// Convert it to a string.
 			return EntityFactory.createJSONStringForEntity(usd);
 		} catch (JSONObjectAdapterException e) {
-			throw new SynapseException(e);
+			throw new SynapseClientException(e);
 		}
 	}
 	

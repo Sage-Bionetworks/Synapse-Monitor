@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.sagebionetworks.client.exceptions.SynapseException;
 import org.sagebionetworks.web.client.cookie.SessionManagerImpl;
 import static org.sagebionetworks.web.shared.Constants.*;
@@ -28,7 +28,7 @@ public class EditServlet extends HttpServlet {
 
 	public static final long serialVersionUID = 1l;
 	
-	static private Log log = LogFactory.getLog(EditServlet.class);
+	static private Logger log = LogManager.getLogger(EditServlet.class.getName());
 	@Inject
 	UserDataStoreImpl userDataStore;
 	

@@ -10,8 +10,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Logs timing and error messages 
@@ -20,7 +20,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class TimingFilter implements Filter {
 	
-	static private Log log = LogFactory.getLog(TimingFilter.class);
+	static private Logger log = LogManager.getLogger(TimingFilter.class.getName());
 
 	@Override
 	public void destroy() {
